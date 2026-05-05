@@ -151,6 +151,28 @@ paths:
           description: Eliminada correctamente
         "404":
           description: No encontrada
+  /health:
+    get:
+      tags: [Pets]
+      summary: Estado del servidor
+      responses:
+        "200":
+          description: Servidor funcionando correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  uptime:
+                    type: number
+                    example: 123.45
+                  timestamp:
+                    type: string
+                    format: date-time
+
 components:
   schemas:
     Pet:
