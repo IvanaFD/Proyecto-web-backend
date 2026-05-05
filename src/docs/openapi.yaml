@@ -1,0 +1,207 @@
+openapi: "3.0.0"
+info:
+  title: Adopt Tracker API
+  version: "1.0.0"
+  description: API REST para gestión de mascotas en adopción.
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: Pets
+    description: Operaciones sobre mascotas
+paths:
+  /pets:
+    get:
+      tags: [Pets]
+      summary: Obtener todas las mascotas
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+          description: Buscar por nombre o especie
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [name, species, age, status, created_at]
+            default: created_at
+          description: Campo de ordenamiento
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Dirección del ordenamiento
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: Número de página
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+          description: Resultados por página
+      responses:
+        "200":
+          description: Lista paginada de mascotas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Pet"
+                  total:
+                    type: integer
+                    example: 7
+    post:
+      tags: [Pets]
+      summary: Crear una mascota
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/PetInput"
+      responses:
+        "201":
+          description: Mascota creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+        "400":
+          description: Datos inválidos
+  /pets/species:
+    get:
+      tags: [Pets]
+      summary: Obtener especies permitidas
+      responses:
+        "200":
+          description: Lista de especies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example: [Perro, Gato, Conejo, Ave, Reptil, Otro]
+  /pets/{id}:
+    get:
+      tags: [Pets]
+      summary: Obtener una mascota por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Mascota encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+        "404":
+          description: No encontrada
+    put:
+      tags: [Pets]
+      summary: Actualizar una mascota
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/PetInput"
+      responses:
+        "200":
+          description: Mascota actualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+        "400":
+          description: Datos inválidos
+        "404":
+          description: No encontrada
+    delete:
+      tags: [Pets]
+      summary: Eliminar una mascota
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Eliminada correctamente
+        "404":
+          description: No encontrada
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Lila
+        species:
+          type: string
+          example: Perro
+        breed:
+          type: string
+          example: Shih Tzu
+        age:
+          type: integer
+          example: 2
+        status:
+          type: string
+          example: Available
+        description:
+          type: string
+          example: Muy juguetona y cariñosa.
+        image_url:
+          type: string
+          example: https://res.cloudinary.com/...
+        created_at:
+          type: string
+          format: date-time
+    PetInput:
+      type: object
+      required: [name, species]
+      properties:
+        name:
+          type: string
+        species:
+          type: string
+          enum: [Perro, Gato, Conejo, Ave, Reptil, Otro]
+        breed:
+          type: string
+        age:
+          type: integer
+        status:
+          type: string
+          enum: [Available, Adopted]
+          default: Available
+        description:
+          type: string
+        image:
+          type: string
+          format: binary
