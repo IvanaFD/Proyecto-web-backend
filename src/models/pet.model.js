@@ -8,23 +8,23 @@ const getSpecies = () => ALLOWED_SPECIES;
 const ALLOWED_SORT_COLUMNS = ["name", "species", "age", "status", "created_at"];
 
 const getAllPets = async ({ search, sort = "created_at", order = "desc", page = 1, limit = 10 } = {}) => {
-  const sortColumn = ALLOWED_SORT_COLUMNS.includes(sort) ? sort : "created_at";
-  const sortOrder = order.toLowerCase() === "asc" ? "ASC" : "DESC";
-  const offset = (Math.max(1, Number(page)) - 1) * Math.max(1, Number(limit));
-  const limitVal = Math.max(1, Number(limit));
+    const sortColumn = ALLOWED_SORT_COLUMNS.includes(sort) ? sort : "created_at";
+    const sortOrder = order.toLowerCase() === "asc" ? "ASC" : "DESC";
+    const offset = (Math.max(1, Number(page)) - 1) * Math.max(1, Number(limit));
+    const limitVal = Math.max(1, Number(limit));
 
-  if (search) {
-    const result = await pool.query(
-      `SELECT * FROM pets WHERE name ILIKE $1 OR species ILIKE $1
-       ORDER BY ${sortColumn} ${sortOrder}
-       LIMIT $2 OFFSET $3`,
-      [`%${search}%`, limitVal, offset]
-    );
-    const count = await pool.query(
-      `SELECT COUNT(*) FROM pets WHERE name ILIKE $1 OR species ILIKE $1`,
-      [`%${search}%`]
-    );
-    return { data: result.rows, total: Number(count.rows[0].count) };
+    if (search) {
+      const result = await pool.query(
+        `SELECT * FROM pets WHERE name ILIKE $1 OR species ILIKE $1
+        ORDER BY ${sortColumn} ${sortOrder}
+        LIMIT $2 OFFSET $3`,
+        [`%${search}%`, limitVal, offset]
+      );
+      const count = await pool.query(
+        `SELECT COUNT(*) FROM pets WHERE name ILIKE $1 OR species ILIKE $1`,
+        [`%${search}%`]
+      );
+      return { data: result.rows, total: Number(count.rows[0].count) };
   }
 
   const result = await pool.query(
