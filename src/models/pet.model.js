@@ -1,17 +1,38 @@
 const pool = require('../config/db');
 
-const getAllPets = async (search) => {
+const ALLOWED_SPECIES = ["Perro", "Gato", "Conejo", "Ave", "Reptil", "Otro"];
 
-    if(search){
+const getSpecies = () => ALLOWED_SPECIES;
+
+
+const ALLOWED_SORT_COLUMNS = ["name", "species", "age", "status", "created_at"];
+
+const getAllPets = async ({ search, sort = "created_at", order = "desc", page = 1, limit = 10 } = {}) => {
+  const sortColumn = ALLOWED_SORT_COLUMNS.includes(sort) ? sort : "created_at";
+  const sortOrder = order.toLowerCase() === "asc" ? "ASC" : "DESC";
+  const offset = (Math.max(1, Number(page)) - 1) * Math.max(1, Number(limit));
+  const limitVal = Math.max(1, Number(limit));
+
+  if (search) {
     const result = await pool.query(
-        `SELECT * FROM pets WHERE name ILIKE $1 OR species ILIKE $1 ORDER BY created_at DESC`,
-        [`%${search}%`]
-        );
-        return result.rows;
-    }
-    const result = await pool.query(`SELECT * FROM pets ORDER BY created_at DESC`);
-    return result.rows;
+      `SELECT * FROM pets WHERE name ILIKE $1 OR species ILIKE $1
+       ORDER BY ${sortColumn} ${sortOrder}
+       LIMIT $2 OFFSET $3`,
+      [`%${search}%`, limitVal, offset]
+    );
+    const count = await pool.query(
+      `SELECT COUNT(*) FROM pets WHERE name ILIKE $1 OR species ILIKE $1`,
+      [`%${search}%`]
+    );
+    return { data: result.rows, total: Number(count.rows[0].count) };
+  }
 
+  const result = await pool.query(
+    `SELECT * FROM pets ORDER BY ${sortColumn} ${sortOrder} LIMIT $1 OFFSET $2`,
+    [limitVal, offset]
+  );
+  const count = await pool.query(`SELECT COUNT(*) FROM pets`);
+  return { data: result.rows, total: Number(count.rows[0].count) };
 };
 
 const getPetById = async (id) => {
@@ -44,10 +65,4 @@ const removePet = async (id) => {
     await pool.query(`DELETE FROM pets WHERE id = $1`, [id]);
 };
 
-module.exports = {
-    getAllPets,
-    getPetById,
-    createPet,
-    updatePet,
-    removePet
-};
+module.exports = { getAllPets, getPetById, createPet, updatePet, removePet, getSpecies, ALLOWED_SPECIES };
