@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.json({ message: "Adopt Tracker API is running", version: "1.0.0", author: "Ivana Figueroa, 2024", status: "ok" });
+  res.json({ message: "Adopt Tracker API is running", version: "1.0.0", author: "Ivana Figueroa, 2026", status: "ok" });
 });
 
 app.use("/pets", petRoutes);
