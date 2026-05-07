@@ -1,7 +1,7 @@
 const pool = require('../src/config/db');
 
 const pets = [
-  { name: "Lila",     species: "Perro",   breed: "Shih Tzu",         age: 2, status: "Available", description: "Muy juguetona y cariñosa, le encanta correr en el parque y jugar con niños.",           image_url: "https://res.cloudinary.com/dajf4aqhf/image/upload/v1778016126/lila_a4wbrn.jpg" },
+  { name: "Lila",     species: "Perro",   breed: "Shih Tzu",         age: 5, status: "Available", description: "Muy juguetona y cariñosa, le encanta correr en el parque y jugar con niños.",           image_url: "https://res.cloudinary.com/dajf4aqhf/image/upload/v1778016126/lila_a4wbrn.jpg" },
   { name: "Lola",     species: "Gato",    breed: "Doméstico",        age: 4, status: "Available", description: "Tranquila y curiosa, perfecta para apartamentos. Le encanta asomarse por la ventana.", image_url: "https://res.cloudinary.com/dajf4aqhf/image/upload/v1778016127/lola_kniv2t.jpg" },
   { name: "Rocky",    species: "Perro",   breed: "Bulldog Francés",  age: 3, status: "Adopted",   description: "Muy leal y protector, ya encontró su hogar ideal.",                                    image_url: "https://res.cloudinary.com/dajf4aqhf/image/upload/v1778016127/Rocky_ms9pjv.avif" },
   { name: "Pistacho", species: "Conejo",  breed: "Holland Lop",      age: 1, status: "Available", description: "Pequeño y adorable, ama los vegetales y explorar espacios nuevos.",                    image_url: "https://res.cloudinary.com/dajf4aqhf/image/upload/v1778016129/Pistacho_pey4gt.jpg" },
