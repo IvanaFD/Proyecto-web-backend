@@ -13,6 +13,7 @@ API REST para la gestión de mascotas en adopción. Permite registrar, consultar
 
 - CRUD completo de mascotas
 - Búsqueda por nombre o especie (`?q=`)
+- Filtro por especie exacta (`?species=`)
 - Paginación (`?page=` `?limit=`)
 - Ordenamiento (`?sort=` `?order=`)
 - Subida de imágenes con validación de formato y tamaño (máx. 1MB)
@@ -36,7 +37,8 @@ API REST para la gestión de mascotas en adopción. Permite registrar, consultar
 | Param | Descripción | Default |
 |-------|-------------|---------|
 | `q` | Buscar por nombre o especie | — |
-| `sort` | Campo de ordenamiento (`name`, `species`, `age`, `status`, `created_at`) | `created_at` |
+| `species` | Filtrar por especie (`Perro`, `Gato`, `Conejo`, `Ave`, `Reptil`, `Otro`) | — |
+| `sort` | Campo de ordenamiento (`name`, `age`, `status`) | `name` |
 | `order` | Dirección (`asc` / `desc`) | `desc` |
 | `page` | Número de página | `1` |
 | `limit` | Resultados por página | `10` |
@@ -86,15 +88,15 @@ El servidor corre en `http://localhost:3000`.
 
 ## Deploy
 
-API desplegada en Render:
-```bash
-https://adopt-tracker-api.onrender.com
+API desplegada en Vercel:
+```
+https://adopt-tracker-api.vercel.app
 ```
 
 Documentación interactiva:
 
-```bash
-https://adopt-tracker-api.onrender.com/api-docs
+```
+https://adopt-tracker-api.vercel.app/api-docs
 ```
 
 ## Repositorio cliente
