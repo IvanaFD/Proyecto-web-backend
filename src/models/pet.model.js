@@ -7,32 +7,35 @@ const getSpecies = () => ALLOWED_SPECIES;
 
 const ALLOWED_SORT_COLUMNS = ["name", "age", "status"];
 
-const getAllPets = async ({ search, sort = "name", order = "desc", page = 1, limit = 10 } = {}) => {
+const getAllPets = async ({ search, species, sort = "name", order = "desc", page = 1, limit = 10 } = {}) => {
     const sortColumn = ALLOWED_SORT_COLUMNS.includes(sort) ? sort : "name";
     const sortOrder = order.toLowerCase() === "asc" ? "ASC" : "DESC";
     const offset = (Math.max(1, Number(page)) - 1) * Math.max(1, Number(limit));
     const limitVal = Math.max(1, Number(limit));
 
-    if (search) {
-      const result = await pool.query(
-        `SELECT * FROM pets WHERE name ILIKE $1 OR species ILIKE $1
-        ORDER BY ${sortColumn} ${sortOrder}
-        LIMIT $2 OFFSET $3`,
-        [`%${search}%`, limitVal, offset]
-      );
-      const count = await pool.query(
-        `SELECT COUNT(*) FROM pets WHERE name ILIKE $1 OR species ILIKE $1`,
-        [`%${search}%`]
-      );
-      return { data: result.rows, total: Number(count.rows[0].count) };
-  }
+    const conditions = [];
+    const filterParams = [];
 
-  const result = await pool.query(
-    `SELECT * FROM pets ORDER BY ${sortColumn} ${sortOrder} LIMIT $1 OFFSET $2`,
-    [limitVal, offset]
-  );
-  const count = await pool.query(`SELECT COUNT(*) FROM pets`);
-  return { data: result.rows, total: Number(count.rows[0].count) };
+    if (search) {
+        filterParams.push(`%${search}%`);
+        conditions.push(`(name ILIKE $${filterParams.length} OR species ILIKE $${filterParams.length})`);
+    }
+
+    if (species && ALLOWED_SPECIES.includes(species)) {
+        filterParams.push(species);
+        conditions.push(`species = $${filterParams.length}`);
+    }
+
+    const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+    const n = filterParams.length;
+
+    const result = await pool.query(
+        `SELECT * FROM pets ${where} ORDER BY ${sortColumn} ${sortOrder} LIMIT $${n + 1} OFFSET $${n + 2}`,
+        [...filterParams, limitVal, offset]
+    );
+    const count = await pool.query(`SELECT COUNT(*) FROM pets ${where}`, filterParams);
+
+    return { data: result.rows, total: Number(count.rows[0].count) };
 };
 
 const getPetById = async (id) => {

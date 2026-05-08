@@ -23,6 +23,12 @@ paths:
           schema:
             type: string
           description: Buscar por nombre o especie
+        - name: species
+          in: query
+          schema:
+            type: string
+            enum: [Perro, Gato, Conejo, Ave, Reptil, Otro]
+          description: Filtrar por especie exacta
         - name: sort
           in: query
           schema:

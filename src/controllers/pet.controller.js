@@ -7,8 +7,8 @@ const getSpecies = (req, res) => {
 
 const getAllPets = async (req, res) => {
   try {
-    const { q, sort, order, page, limit } = req.query;
-    const result = await petModel.getAllPets({ search: q, sort, order, page, limit });
+    const { q, species, sort, order, page, limit } = req.query;
+    const result = await petModel.getAllPets({ search: q, species, sort, order, page, limit });
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
