@@ -27,8 +27,8 @@ paths:
           in: query
           schema:
             type: string
-            enum: [name, species, age, status, created_at]
-            default: created_at
+            enum: [name, age, status]
+            default: name
           description: Campo de ordenamiento
         - name: order
           in: query

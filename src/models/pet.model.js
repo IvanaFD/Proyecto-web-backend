@@ -5,10 +5,10 @@ const ALLOWED_SPECIES = ["Perro", "Gato", "Conejo", "Ave", "Reptil", "Otro"];
 const getSpecies = () => ALLOWED_SPECIES;
 
 
-const ALLOWED_SORT_COLUMNS = ["name", "species", "age", "status", "created_at"];
+const ALLOWED_SORT_COLUMNS = ["name", "age", "status"];
 
-const getAllPets = async ({ search, sort = "created_at", order = "desc", page = 1, limit = 10 } = {}) => {
-    const sortColumn = ALLOWED_SORT_COLUMNS.includes(sort) ? sort : "created_at";
+const getAllPets = async ({ search, sort = "name", order = "desc", page = 1, limit = 10 } = {}) => {
+    const sortColumn = ALLOWED_SORT_COLUMNS.includes(sort) ? sort : "name";
     const sortOrder = order.toLowerCase() === "asc" ? "ASC" : "DESC";
     const offset = (Math.max(1, Number(page)) - 1) * Math.max(1, Number(limit));
     const limitVal = Math.max(1, Number(limit));
